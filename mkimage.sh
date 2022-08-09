@@ -28,6 +28,8 @@ UBOOT_PATH=u-boot
 rm -rf $IMAGE_PATH
 mkdir -p $IMAGE_PATH
 
+ASUS_COMMON_FOLDER=device/asus/common
+
 FSTYPE=ext4
 echo system filesysystem is $FSTYPE
 
@@ -84,8 +86,8 @@ cp -a $BOARD_DTBO_IMG $IMAGE_PATH/dtbo.img
 echo "done."
 
 echo "create splash.img..."
-if [ -f "${TARGET_DEVICE_DIR}/splash.img" ]; then
-    cp -a ${TARGET_DEVICE_DIR}/splash.img $IMAGE_PATH/splash.img
+if [ -f "$ASUS_COMMON_FOLDER/splash.img" ]; then
+    cp -a $ASUS_COMMON_FOLDER/splash.img $IMAGE_PATH/splash.img
     echo "done."
 fi
 
