@@ -16,4 +16,7 @@
 
 <resources>
 
+    <!-- Disable the lockscreen -->
+    <bool name="def_lockscreen_disabled">true</bool>
+
 </resources>
