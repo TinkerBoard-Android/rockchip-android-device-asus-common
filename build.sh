@@ -255,6 +255,8 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
 	else
 		cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
 	fi
+    elif [[ $TARGET_PRODUCT = "Tinker_Board" ]]; then
+            cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
     else
         if [[ $TARGET_PRODUCT_MODEL = "Tinker Board 2" ]] ; then
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
