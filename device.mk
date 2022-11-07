@@ -15,4 +15,9 @@
 #
 
 PRODUCT_PACKAGES := \
-    ASUSToolkit
+    ASUSToolkit \
+    asus-debugger-d \
+    klogger \
+    tcpdump2 \
+    AsusDebugger \
+    debugger.conf
