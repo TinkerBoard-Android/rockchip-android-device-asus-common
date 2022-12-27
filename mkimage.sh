@@ -215,8 +215,8 @@ else
     fi
 fi
 
-SHARED_LIBRARIES_DIR=out/host/linux-x86/lib64
-JAVA_LIBRARIES_DIR=out/host/linux-x86/framework
+SHARED_LIBRARIES_DIR=prebuilts/sdk/tools/linux/lib64
+JAVA_LIBRARIES_DIR=prebuilts/sdk/tools/lib
 OTA_KEY_DIR=build/target/product/security
 
 if [ $TARGET == $BOOT_OTA ]; then
