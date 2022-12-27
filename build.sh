@@ -134,6 +134,7 @@ BUILD_KERNEL_WITH_CLANG=true
 fi
 
 PACK_TOOL_DIR=RKTools/linux/Linux_Pack_Firmware
+PROGRAM_IMAGE_TOOLS="../../RKTools/linux/programming_image_tool/programmer_image_tool_v1.2_linux/programmer_image_tool"
 IMAGE_PATH=rockdev/Image-$TARGET_PRODUCT
 export PROJECT_TOP=`gettop`
 
@@ -258,6 +259,7 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     elif [[ $TARGET_PRODUCT = "Tinker_Board" ]]; then
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
     elif [[ $TARGET_PRODUCT = "Tinker_Board_3" ]]; then
+	    echo "Tinker_Board_3 mkupdate.sh"
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
     else
         if [[ $TARGET_PRODUCT_MODEL = "Tinker Board 2" ]] ; then
@@ -277,9 +279,18 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     mv $PACK_TOOL_DIR/rockdev/update.img $IMAGE_PATH/ -f
     rm $PACK_TOOL_DIR/rockdev/Image -rf
 
-    cd device/asus/common
-    TARGET_PRODUCT=$TARGET_PRODUCT ./sdboot.sh
-    cd -
+    if [[ $TARGET_PRODUCT = "Tinker_Board_3" ]]; then
+        echo "EMMC or SD card full image..."
+        cd $IMAGE_PATH/
+        echo $IMAGE_PATH
+        $PROGRAM_IMAGE_TOOLS -i update.img -t emmc
+        mv out_image.img $TARGET_PRODUCT-raw.img
+        cd -
+    else
+        cd device/asus/common
+        TARGET_PRODUCT=$TARGET_PRODUCT ./sdboot.sh
+        cd -
+    fi
 fi
 
 if [ "$BUILD_PACKING" = true ] ; then
