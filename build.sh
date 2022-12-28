@@ -195,6 +195,11 @@ if [ "$BUILD_ANDROID" = true ] ; then
     if [ "$BUILD_OTA" = true ] ; then
         INTERNAL_OTA_PACKAGE_OBJ_TARGET=obj/PACKAGING/target_files_intermediates/$TARGET_PRODUCT-target_files-*.zip
         INTERNAL_OTA_PACKAGE_TARGET=$TARGET_PRODUCT-ota-*.zip
+
+        if [ -e out/dist ]; then
+            rm -rf out/dist
+        fi
+
         if [ "$BUILD_AB_IMAGE" = true ] ; then
             echo "make ab image and generate ota package"
             make installclean
