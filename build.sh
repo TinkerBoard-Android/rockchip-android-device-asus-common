@@ -191,6 +191,9 @@ cd u-boot && ./scripts/pack_resource.sh ../$LOCAL_KERNEL_PATH/resource.img && cp
 
 # build android
 if [ "$BUILD_ANDROID" = true ] ; then
+    echo BUILD_NUMBER=$BUILD_NUMBER
+    echo ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER
+    echo ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION
     # build OTA
     if [ "$BUILD_OTA" = true ] ; then
         INTERNAL_OTA_PACKAGE_OBJ_TARGET=obj/PACKAGING/target_files_intermediates/$TARGET_PRODUCT-target_files-*.zip
@@ -203,15 +206,14 @@ if [ "$BUILD_ANDROID" = true ] ; then
         if [ "$BUILD_AB_IMAGE" = true ] ; then
             echo "make ab image and generate ota package"
             make installclean
-            make -j$BUILD_JOBS
-            make dist -j$BUILD_JOBS
+            make BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION -j$BUILD_JOBS
+            make dist -j$BUILD_JOBS BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION
             ./mkimage_ab.sh ota
         else
             echo "generate ota package"
 	    make installclean
-	    make -j$BUILD_JOBS
-	    make dist -j$BUILD_JOBS
-            make BUILD_NUMBER=$BUILD_NUMBER otapackage -j$BUILD_JOBS
+	    make BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION -j$BUILD_JOBS
+	    make dist -j$BUILD_JOBS BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION
             ./mkimage.sh ota
         fi
         cp $OUT/$INTERNAL_OTA_PACKAGE_TARGET $IMAGE_PATH/
