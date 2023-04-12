@@ -265,8 +265,8 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
 	fi
     elif [[ $TARGET_PRODUCT = "Tinker_Board" ]]; then
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
-    elif [[ $TARGET_PRODUCT = "Tinker_Board_3" ]]; then
-	    echo "Tinker_Board_3 mkupdate.sh"
+    elif [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]]; then
+            echo "Tinker_Board_3N mkupdate.sh"
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
     else
         if [[ $TARGET_PRODUCT_MODEL = "Tinker Board 2" ]] ; then
@@ -286,7 +286,7 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     mv $PACK_TOOL_DIR/rockdev/update.img $IMAGE_PATH/ -f
     rm $PACK_TOOL_DIR/rockdev/Image -rf
 
-    if [[ $TARGET_PRODUCT = "Tinker_Board_3" ]]; then
+    if [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]]; then
         echo "EMMC or SD card full image..."
         cd $IMAGE_PATH/
         echo $IMAGE_PATH
