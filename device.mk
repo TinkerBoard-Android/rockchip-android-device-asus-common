@@ -27,3 +27,7 @@ PRODUCT_PACKAGES += \
     DMClient
 
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
+
+#TinkerConfig
+PRODUCT_PACKAGES += \
+    TinkerConfig
