@@ -6,7 +6,7 @@ LOCAL_MODULE := AsusDebugger
 LOCAL_BUILT_MODULE_STEM := package.apk
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),WW_Tinker_Board_2 Tinker_Board_2))
 	LOCAL_SRC_FILES := config/Tinker_Board_2/$(LOCAL_MODULE).apk
-else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N))
+else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N Sanden))
         LOCAL_SRC_FILES := config/Tinker_Board_3N/$(LOCAL_MODULE).apk
 else
 	LOCAL_SRC_FILES := config/Tinker_Board/$(LOCAL_MODULE).apk
@@ -27,7 +27,7 @@ LOCAL_MODULE := klogger
 LOCAL_CHECK_ELF_FILES := false
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),WW_Tinker_Board_2 Tinker_Board_2))
 	LOCAL_SRC_FILES := config/Tinker_Board_2/$(LOCAL_MODULE)
-else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N))
+else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N Sanden))
         LOCAL_SRC_FILES := config/Tinker_Board_3N/$(LOCAL_MODULE)
 else
 	LOCAL_SRC_FILES := config/Tinker_Board/$(LOCAL_MODULE)
@@ -47,7 +47,7 @@ LOCAL_MODULE := tcpdump2
 LOCAL_CHECK_ELF_FILES := false
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),WW_Tinker_Board_2 Tinker_Board_2))
 	LOCAL_SRC_FILES := config/Tinker_Board_2/$(LOCAL_MODULE)
-else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N))
+else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N Sanden))
         LOCAL_SRC_FILES := config/Tinker_Board_3N/$(LOCAL_MODULE)
 else
 	LOCAL_SRC_FILES := config/Tinker_Board/$(LOCAL_MODULE)
@@ -67,7 +67,7 @@ LOCAL_MODULE := asus-debugger-d
 LOCAL_CHECK_ELF_FILES := false
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),WW_Tinker_Board_2 Tinker_Board_2))
 	LOCAL_SRC_FILES := config/Tinker_Board_2/$(LOCAL_MODULE)
-else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N))
+else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N Sanden))
         LOCAL_SRC_FILES := config/Tinker_Board_3N/$(LOCAL_MODULE)
 else
 	LOCAL_SRC_FILES := config/Tinker_Board/$(LOCAL_MODULE)
@@ -120,7 +120,7 @@ else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),hugo TW_Hugo CN_Hugo HK
 	else
 		LOCAL_SRC_FILES := config/Hugo/debug/$(LOCAL_MODULE)
 	endif
-else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N))
+else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3N Sanden))
         ifeq ($(TARGET_BUILD_VARIANT),user)
                 LOCAL_SRC_FILES := config/Tinker_Board_3N/user/$(LOCAL_MODULE)
         else
