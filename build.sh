@@ -6,6 +6,7 @@ usage()
     echo "WHERE: -U = build uboot                                 "
     echo "       -C = build kernel with Clang                     "
     echo "       -K = build kernel                                "
+    echo "       -M = build kernel patched by Magisk              "
     echo "       -A = build android                               "
     echo "       -p = will build packaging in IMAGE      "
     echo "       -o = build OTA package                           "
@@ -23,6 +24,7 @@ source build/envsetup.sh >/dev/null
 BUILD_UBOOT=false
 BUILD_KERNEL_WITH_CLANG=false
 BUILD_KERNEL=false
+BUILD_KERNEL_PATCHED=false
 BUILD_ANDROID=false
 BUILD_AB_IMAGE=false
 BUILD_UPDATE_IMG=false
@@ -40,7 +42,7 @@ RELEASE_NAME=${TARGET_PRODUCT#"WW_"}
 RELEASE_NAME="$RELEASE_NAME"-Android12-"$BUILD_NUMBER"
 
 # check pass argument
-while getopts "UCKABpouvrn:d:V:J:" arg
+while getopts "UCKMABpouvrn:d:V:J:" arg
 do
     case $arg in
         U)
@@ -56,6 +58,10 @@ do
             echo "will build kernel"
             BUILD_KERNEL=true
             ;;
+        M)
+            echo "will build kernel patched by Magisk"
+            BUILD_KERNEL_PATCHED=true
+	    ;;
         A)
             echo "will build android"
             BUILD_ANDROID=true
@@ -248,6 +254,18 @@ if [ "$BUILD_OTA" != true ] ; then
 		echo "Make image failed!"
 		exit 1
 	fi
+fi
+
+if [ "$BUILD_KERNEL_PATCHED" = true ] ; then
+    echo "Start build kernel patched by Magisk"
+
+    if [[ $TARGET_PRODUCT = "Sanden" ]]; then
+	echo "For $TARGET_PRODUCT"
+	echo "replace path $IMAGE_PATH"
+    	cp device/asus/tinker_board_3/Sanden/prebuild/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
+    else
+	echo "No support the PRODUCT $TARGET_PRODUCT"
+    fi
 fi
 
 if [ "$BUILD_UPDATE_IMG" = true ] ; then
