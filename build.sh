@@ -259,7 +259,7 @@ fi
 if [ "$BUILD_KERNEL_PATCHED" = true ] ; then
     echo "Start build kernel patched by Magisk"
 
-    if [[ $TARGET_PRODUCT = "Sanden" ]]; then
+    if [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]] ; then
 	echo "For $TARGET_PRODUCT"
 	echo "replace path $IMAGE_PATH"
     	cp device/asus/tinker_board_3/Sanden/prebuild/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
@@ -286,7 +286,7 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     elif [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]]; then
             echo "Tinker_Board_3N mkupdate.sh"
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
-    elif [[ $TARGET_PRODUCT = "Sanden" ]]; then
+    elif [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]] ; then
             echo "Sanden mkupdate.sh"
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
     else
@@ -307,7 +307,7 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     mv $PACK_TOOL_DIR/rockdev/update.img $IMAGE_PATH/ -f
     rm $PACK_TOOL_DIR/rockdev/Image -rf
 
-    if [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]] || [[ $TARGET_PRODUCT = "Sanden" ]]; then
+    if [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]] || [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]]; then
         echo "EMMC or SD card full image..."
         cd $IMAGE_PATH/
         echo $IMAGE_PATH
