@@ -262,7 +262,7 @@ if [ "$BUILD_KERNEL_PATCHED" = true ] ; then
     if [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]] ; then
 	echo "For $TARGET_PRODUCT"
 	echo "replace path $IMAGE_PATH"
-    	cp device/asus/tinker_board_3/Sanden/prebuild/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
+    	cp device/asus/tinker_board_3/$TARGET_PRODUCT/prebuild/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
     else
 	echo "No support the PRODUCT $TARGET_PRODUCT"
     fi
