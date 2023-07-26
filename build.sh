@@ -263,6 +263,8 @@ if [ "$BUILD_KERNEL_PATCHED" = true ] ; then
 	echo "For $TARGET_PRODUCT"
 	echo "replace path $IMAGE_PATH"
     	cp device/asus/tinker_board_3/$TARGET_PRODUCT/prebuild/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
+	elif [ $TARGET_PRODUCT = "Tinker_Board_2" ] ; then
+		cp device/asus/tinker_board_2/Prebuilts/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
     else
 	echo "No support the PRODUCT $TARGET_PRODUCT"
     fi
