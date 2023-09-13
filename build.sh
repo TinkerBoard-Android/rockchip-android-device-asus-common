@@ -286,11 +286,21 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     elif [[ $TARGET_PRODUCT = "Tinker_Board" ]]; then
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
     elif [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]]; then
+        if [ "$BUILD_AB_IMAGE" = true ] ; then
+            echo "Tinker_Board_3N mkupdate.sh for AB boot"
+	    cd $PACK_TOOL_DIR/rockdev && ./mkupdate_ab_$TARGET_PRODUCT.sh
+        else
             echo "Tinker_Board_3N mkupdate.sh"
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
+        fi
     elif [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]] ; then
+        if [ "$BUILD_AB_IMAGE" = true ] ; then
+            echo "Sanden mkupdate.sh for AB boot"
+	    cd $PACK_TOOL_DIR/rockdev && ./mkupdate_ab_$TARGET_PRODUCT.sh
+        else
             echo "Sanden mkupdate.sh"
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
+        fi
     else
         if [[ $TARGET_PRODUCT_MODEL = "Tinker Board 2" ]] ; then
             cd $PACK_TOOL_DIR/rockdev && ./mkupdate_$TARGET_PRODUCT.sh
