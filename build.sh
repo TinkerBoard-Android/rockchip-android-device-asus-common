@@ -83,7 +83,8 @@ do
             BUILD_UPDATE_IMG=true
             ;;
         v)
-            BUILD_VARIANT=$OPTARG
+            #BUILD_VARIANT=$OPTARG
+            BUILD_VARIANT_FLAG=true
             ;;
         n)
             BUILD_NUMBER="$OPTARG"-"$(date  +%Y%m%d)"
@@ -111,6 +112,11 @@ done
 TARGET_PRODUCT=`get_build_var TARGET_PRODUCT`
 TARGET_BOARD_PLATFORM=`get_build_var TARGET_BOARD_PLATFORM`
 TARGET_PRODUCT_MODEL=`get_build_var PRODUCT_MODEL`
+
+if [ "$BUILD_VARIANT_FLAG" = true ] ; then
+echo "create image include $BUILD_VARIANT flag"
+RELEASE_NAME="$RELEASE_NAME"-"$BUILD_VARIANT"
+fi
 
 #set jdk version
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
