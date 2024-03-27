@@ -1,5 +1,5 @@
 #
-# Copyright 2014 Rockchip Limited
+# Copyright 2022 ASUS Limited
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,3 +14,25 @@
 # limitations under the License.
 #
 
+PRODUCT_PACKAGES += \
+    ASUSToolkit \
+    asus-debugger-d \
+    klogger \
+    tcpdump2 \
+    AsusDebugger \
+    debugger.conf
+
+#DMClient
+PRODUCT_PACKAGES += \
+    DMClient
+
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
+
+#TinkerConfig
+PRODUCT_PACKAGES += \
+    TinkerConfig
+
+
+ifeq ($(strip $(BOARD_SUPPORT_MODEM)),true)
+$(call inherit-product, device/asus/common/cellular/cellular.mk)
+endif
