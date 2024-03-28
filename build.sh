@@ -1,16 +1,19 @@
 #!/bin/bash
 usage()
 {
-   echo "USAGE: [-U] [-CK] [-A] [-p] [-o] [-u] [-v VERSION_NAME]  "
+   echo "USAGE: [-U] [-CK] [-A] [-p] [-o] [-u] [-v VERSION_NAME] [-n BUILD_NUMBER]"
     echo "No ARGS means use default build option                  "
     echo "WHERE: -U = build uboot                                 "
     echo "       -C = build kernel with Clang                     "
     echo "       -K = build kernel                                "
+    echo "       -M = build kernel patched by Magisk              "
     echo "       -A = build android                               "
     echo "       -p = will build packaging in IMAGE      "
     echo "       -o = build OTA package                           "
     echo "       -u = build update.img                            "
     echo "       -v = build android with 'user' or 'userdebug'    "
+    echo "       -n = set build number    "
+    echo "       -r = pack the release    "
     echo "       -d = huild kernel dts name    "
     echo "       -V = build version    "
     echo "       -J = build jobs    "
@@ -21,6 +24,7 @@ source build/envsetup.sh >/dev/null
 BUILD_UBOOT=false
 BUILD_KERNEL_WITH_CLANG=false
 BUILD_KERNEL=false
+BUILD_KERNEL_PATCHED=false
 BUILD_ANDROID=false
 BUILD_AB_IMAGE=`get_build_var BOARD_USES_AB_IMAGE`
 BUILD_UPDATE_IMG=false
@@ -28,11 +32,17 @@ BUILD_OTA=false
 BUILD_PACKING=false
 BUILD_VARIANT=`get_build_var TARGET_BUILD_VARIANT`
 KERNEL_DTS=""
-BUILD_VERSION=""
-BUILD_JOBS=8
+#BUILD_VERSION=""
+BUILD_JOBS=16
+
+PACK_RELEASE=false
+
+BUILD_NUMBER="eng"-"$USER"-"$(date  +%Y%m%d.%H%M)"
+RELEASE_NAME=${TARGET_PRODUCT#"WW_"}
+RELEASE_NAME="$RELEASE_NAME"-Android14-"$BUILD_NUMBER"
 
 # check pass argument
-while getopts "UCKABpouv:d:V:J:" arg
+while getopts "UCKMABpouvrn:d:V:J:" arg
 do
     case $arg in
         U)
@@ -48,6 +58,10 @@ do
             echo "will build kernel"
             BUILD_KERNEL_WITH_CLANG=true
             BUILD_KERNEL=true
+            ;;
+        M)
+            echo "will build kernel patched by Magisk"
+            BUILD_KERNEL_PATCHED=true
             ;;
         A)
             echo "will build android"
@@ -70,7 +84,17 @@ do
             BUILD_UPDATE_IMG=true
             ;;
         v)
-            BUILD_VARIANT=$OPTARG
+            #BUILD_VARIANT=$OPTARG
+	    BUILD_VARIANT_FLAG=true
+            ;;
+        n)
+            BUILD_NUMBER="$OPTARG"-"$(date  +%Y%m%d)"
+            RELEASE_NAME=${TARGET_PRODUCT#"WW_"}
+            RELEASE_NAME="$RELEASE_NAME"-Android14-v"$BUILD_NUMBER"
+	    ;;
+        r)
+            echo "will pack the release"
+            PACK_RELEASE=true
             ;;
         V)
             BUILD_VERSION=$OPTARG
@@ -88,6 +112,12 @@ done
 
 TARGET_PRODUCT=`get_build_var TARGET_PRODUCT`
 TARGET_BOARD_PLATFORM=`get_build_var TARGET_BOARD_PLATFORM`
+TARGET_PRODUCT_MODEL=`get_build_var PRODUCT_MODEL`
+
+if [ "$BUILD_VARIANT_FLAG" = true ] ; then
+echo "create image include $BUILD_VARIANT flag"
+RELEASE_NAME="$RELEASE_NAME"-"$BUILD_VARIANT"
+fi
 
 #set jdk version
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
@@ -96,7 +126,7 @@ export PATH=$ANDROID_BUILD_TOP/prebuilts/clang/host/linux-x86/clang-r487747c/bin
 export CLASSPATH=.:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
 
 # source environment and chose target product
-BUILD_NUMBER=`get_build_var BUILD_NUMBER`
+#BUILD_NUMBER=`get_build_var BUILD_NUMBER`
 BUILD_ID=`get_build_var BUILD_ID`
 # only save the version code
 SDK_VERSION=`get_build_var CURRENT_SDK_VERSION`
@@ -112,14 +142,16 @@ echo "-------------------KERNEL_VERSION:$KERNEL_VERSION"
 echo "-------------------KERNEL_DTS:$KERNEL_DTS"
 
 PACK_TOOL_DIR=RKTools/linux/Linux_Pack_Firmware
+PROGRAM_IMAGE_TOOLS="../../RKTools/linux/programming_image_tool/programmer_image_tool_v1.2_linux/programmer_image_tool"
 IMAGE_PATH=rockdev/Image-$TARGET_PRODUCT
 export PROJECT_TOP=`gettop`
 
-lunch $TARGET_PRODUCT-$BUILD_VARIANT
+#lunch $TARGET_PRODUCT-$BUILD_VARIANT
 
-DATE=$(date  +%Y%m%d.%H%M)
-STUB_PATH=Image/"$TARGET_PRODUCT"_"$BUILD_VARIANT"_"$KERNEL_DTS"_"$BUILD_VERSION"_"$DATE"
-STUB_PATH="$(echo $STUB_PATH | tr '[:lower:]' '[:upper:]')"
+#DATE=$(date  +%Y%m%d.%H%M)
+#STUB_PATH=Image/"$TARGET_PRODUCT"_"$BUILD_VARIANT"_"$KERNEL_DTS"_"$BUILD_VERSION"_"$DATE"
+#STUB_PATH="$(echo $STUB_PATH | tr '[:lower:]' '[:upper:]')"
+STUB_PATH=IMAGE/"$RELEASE_NAME"
 export STUB_PATH=$PROJECT_TOP/$STUB_PATH
 export STUB_PATCH_PATH=$STUB_PATH/PATCHES
 
@@ -180,14 +212,22 @@ cd u-boot && ./scripts/pack_resource.sh ../$LOCAL_KERNEL_PATH/resource.img && cp
 
 # build android
 if [ "$BUILD_ANDROID" = true ] ; then
+    echo BUILD_NUMBER=$BUILD_NUMBER
+    echo ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER
+    echo ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION
     # build OTA
     if [ "$BUILD_OTA" = true ] ; then
         INTERNAL_OTA_PACKAGE_OBJ_TARGET=obj/PACKAGING/target_files_intermediates/$TARGET_PRODUCT-target_files-*.zip
         INTERNAL_OTA_PACKAGE_TARGET=$TARGET_PRODUCT-ota-*.zip
+
+	if [ -e out/dist ]; then
+            rm -rf out/dist
+        fi
+
         if [ "$BUILD_AB_IMAGE" = true ] ; then
             echo "make ab image and generate ota package"
             make installclean
-            make -j$BUILD_JOBS
+            make BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION -j$BUILD_JOBS 
             # check the result of make
             if [ $? -eq 0 ]; then
                 echo "Build android ok!"
@@ -196,7 +236,7 @@ if [ "$BUILD_ANDROID" = true ] ; then
                 exit 1
             fi
 
-            make dist -j$BUILD_JOBS
+            make dist -j$BUILD_JOBS BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION
             # check the result of make
             if [ $? -eq 0 ]; then
                 echo "Build android ok!"
@@ -215,7 +255,7 @@ if [ "$BUILD_ANDROID" = true ] ; then
         else
             echo "generate ota package"
 	    make installclean
-	    make -j$BUILD_JOBS
+	    make BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION -j$BUILD_JOBS
             # check the result of make
             if [ $? -eq 0 ]; then
                 echo "Build android ok!"
@@ -223,7 +263,7 @@ if [ "$BUILD_ANDROID" = true ] ; then
                 echo "Build android failed!"
                 exit 1
             fi
-	    make dist -j$BUILD_JOBS
+	    make dist -j$BUILD_JOBS BUILD_NUMBER=$BUILD_NUMBER ASUS_CSC_BUILD_NUMBER=$ASUS_CSC_BUILD_NUMBER ASUS_PROJECT_VERSION=$ASUS_PROJECT_VERSION
             # check the result of make
             if [ $? -eq 0 ]; then
                 echo "Build android ok!"
@@ -245,7 +285,7 @@ if [ "$BUILD_ANDROID" = true ] ; then
     else # regular build without OTA
         echo "start build android"
         make installclean
-        make -j$BUILD_JOBS
+        make BUILD_NUMBER=$BUILD_NUMBER -j$BUILD_JOBS
         # check the result of make
         if [ $? -eq 0 ]; then
             echo "Build android ok!"
@@ -269,6 +309,20 @@ if [ "$BUILD_OTA" != true ] ; then
 		echo "Make image failed!"
 		exit 1
 	fi
+fi
+
+if [ "$BUILD_KERNEL_PATCHED" = true ] ; then
+    echo "Start build kernel patched by Magisk"
+
+    if [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]] ; then
+        echo "For $TARGET_PRODUCT"
+        echo "replace path $IMAGE_PATH"
+        cp device/asus/tinker_board_3/$TARGET_PRODUCT/prebuild/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
+        elif [ $TARGET_PRODUCT = "Tinker_Board_2" ] ; then
+                cp device/asus/tinker_board_2/Prebuilts/apps/Magisk/boot_patched.img $IMAGE_PATH/boot.img
+    else
+        echo "No support the PRODUCT $TARGET_PRODUCT"
+    fi
 fi
 
 if [ "$BUILD_UPDATE_IMG" = true ] ; then
@@ -297,6 +351,19 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     cd -
     mv $PACK_TOOL_DIR/rockdev/update.img $IMAGE_PATH/ -f
     rm $PACK_TOOL_DIR/rockdev/Image -rf
+
+    if [[ $TARGET_PRODUCT = "Tinker_Board_3" ]] || [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]] || [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]]; then
+        echo "EMMC or SD card full image..."
+        cd $IMAGE_PATH/
+        echo $IMAGE_PATH
+        $PROGRAM_IMAGE_TOOLS -i update.img -t emmc
+        mv out_image.img $TARGET_PRODUCT-raw.img
+        cd -
+    else
+        cd device/asus/common
+        TARGET_PRODUCT=$TARGET_PRODUCT ./sdboot.sh
+        cd -
+    fi
 fi
 
 if [ "$BUILD_PACKING" = true ] ; then
@@ -306,12 +373,21 @@ mkdir -p $STUB_PATH
 mkdir -p $STUB_PATH/IMAGES/
 cp $IMAGE_PATH/* $STUB_PATH/IMAGES/
 
+if [ "$PACK_RELEASE" = true ] ; then
+    mv $STUB_PATH/IMAGES/$TARGET_PRODUCT-raw.img $STUB_PATH/$RELEASE_NAME.img
+    cd $STUB_PATH
+    zip -r $RELEASE_NAME.zip $RELEASE_NAME.img
+    sha256sum $RELEASE_NAME.zip > $RELEASE_NAME.zip.sha256sum
+    rm $RELEASE_NAME.img
+    cd -
+fi
+
 #Generate patches
 
 .repo/repo/repo forall  -c "$PROJECT_TOP/device/rockchip/common/gen_patches_body.sh"
 .repo/repo/repo manifest -r -o out/commit_id.xml
 #Copy stubs
-cp out/commit_id.xml $STUB_PATH/manifest_${DATE}.xml
+cp out/commit_id.xml $STUB_PATH/manifest_$RELEASE_NAME.xml
 
 mkdir -p $STUB_PATCH_PATH/kernel
 cp $LOCAL_KERNEL_PATH/.config $STUB_PATCH_PATH/kernel
