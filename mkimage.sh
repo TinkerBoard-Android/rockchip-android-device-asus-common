@@ -31,6 +31,8 @@ UBOOT_PATH=u-boot
 rm -rf $IMAGE_PATH
 mkdir -p $IMAGE_PATH
 
+ASUS_COMMON_FOLDER=device/asus/common
+
 FSTYPE=ext4
 echo system filesysystem is $FSTYPE
 
@@ -99,6 +101,13 @@ fi
 cp -a $BOARD_DTBO_IMG $IMAGE_PATH/dtbo.img
 echo "done."
 
+echo "create splash.img..."
+if [ -f "$ASUS_COMMON_FOLDER/splash.img" ]; then
+    cp -a $ASUS_COMMON_FOLDER/splash.img $IMAGE_PATH/splash.img
+    echo "done."
+fi
+
+
 copy_images $KERNEL_PATH/resource.img $IMAGE_PATH/resource.img
 copy_images_from_out init_boot.img
 copy_images_from_out pvmfw.img
@@ -128,8 +137,8 @@ fi
 
 echo -n "create misc.img.... "
 cp -a rkst/Image/misc.img $IMAGE_PATH/misc.img
-cp -a rkst/Image/pcba_small_misc.img $IMAGE_PATH/pcba_small_misc.img
-cp -a rkst/Image/pcba_whole_misc.img $IMAGE_PATH/pcba_whole_misc.img
+#cp -a rkst/Image/pcba_small_misc.img $IMAGE_PATH/pcba_small_misc.img
+#cp -a rkst/Image/pcba_whole_misc.img $IMAGE_PATH/pcba_whole_misc.img
 echo "done."
 
 if [ -f $UBOOT_PATH/uboot.img ]
@@ -282,6 +291,31 @@ if [ $IS_EBOOK == "true" ]; then
         echo -n "create logo.img for uboot/charging/kernel logo"
         $ebook_logo_tool --uboot-logo $EINK_LOGO_PATH/uboot_logo/uboot.bmp --kernel-logo $EINK_LOGO_PATH/kernel_logo/kernel.bmp --charge-logo $EINK_LOGO_PATH/uboot_logo/battery_0.bmp $EINK_LOGO_PATH/uboot_logo/battery_1.bmp $EINK_LOGO_PATH/uboot_logo/battery_2.bmp $EINK_LOGO_PATH/uboot_logo/battery_3.bmp $EINK_LOGO_PATH/uboot_logo/battery_4.bmp $EINK_LOGO_PATH/uboot_logo/battery_5.bmp $EINK_LOGO_PATH/uboot_logo/battery_fail.bmp --poweroff-logo $EINK_LOGO_PATH/uboot_logo/poweroff.bmp --output $IMAGE_PATH/logo.img
     fi
+fi
+
+if [ -d ${TARGET_DEVICE_DIR}/dtoverlay ]; then
+echo -n "Build dtbo"
+rm -f $TARGET_DEVICE_DIR/dtoverlay/overlays/*.dtbo
+for file in $TARGET_DEVICE_DIR/dtoverlay/overlays/*.dts
+do
+    [[ -f "$file" ]] || continue
+    dts=${file##*/}
+    dtbo=${dts%.*}
+    dtc -@ -O dtb -o $TARGET_DEVICE_DIR/dtoverlay/overlays/$dtbo.dtbo $TARGET_DEVICE_DIR/dtoverlay/overlays/$dts
+done
+echo "done."
+
+echo -n "create dtoverlay.img"
+dd if=/dev/zero of=$IMAGE_PATH/dtoverlay.img count=2000 bs=8k
+mkdosfs $IMAGE_PATH/dtoverlay.img
+mkdir $IMAGE_PATH/.tmp
+sudo mount $IMAGE_PATH/dtoverlay.img $IMAGE_PATH/.tmp
+sudo cp -rf $TARGET_DEVICE_DIR/dtoverlay/* $IMAGE_PATH/.tmp
+sudo rm -f $IMAGE_PATH/.tmp/overlays/*.dts
+sudo rm -f $IMAGE_PATH/.tmp/overlays/.gitignore
+sudo umount $IMAGE_PATH/.tmp
+rm -rf $IMAGE_PATH/.tmp
+echo "done."
 fi
 
 chmod a+r -R $IMAGE_PATH/
