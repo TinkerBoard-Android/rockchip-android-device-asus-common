@@ -313,6 +313,7 @@ sudo mount $IMAGE_PATH/dtoverlay.img $IMAGE_PATH/.tmp
 sudo cp -rf $TARGET_DEVICE_DIR/dtoverlay/* $IMAGE_PATH/.tmp
 sudo rm -f $IMAGE_PATH/.tmp/overlays/*.dts
 sudo rm -f $IMAGE_PATH/.tmp/overlays/.gitignore
+sync; sync; sleep 5;
 sudo umount $IMAGE_PATH/.tmp
 rm -rf $IMAGE_PATH/.tmp
 echo "done."
