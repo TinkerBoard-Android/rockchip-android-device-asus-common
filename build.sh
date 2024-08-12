@@ -334,7 +334,7 @@ if [ "$BUILD_UPDATE_IMG" = true ] ; then
     mv $PACK_TOOL_DIR/rockdev/update.img $IMAGE_PATH/ -f
     rm $PACK_TOOL_DIR/rockdev/Image -rf
 
-    if [[ $TARGET_PRODUCT = "Tinker_Board_3" ]] || [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]] || [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]]; then
+    if [[ $TARGET_PRODUCT = "Tinker_Board_3" ]] || [[ $TARGET_PRODUCT = "Tinker_Board_3N" ]] || [[ $TARGET_PRODUCT = "Sanden_VM" ]] || [[ $TARGET_PRODUCT = "Sanden_CM" ]] || [[ $TARGET_PRODUCT = "Tinker_Board_3_RV" ]]; then
         echo "EMMC or SD card full image..."
         cd $IMAGE_PATH/
         echo $IMAGE_PATH
