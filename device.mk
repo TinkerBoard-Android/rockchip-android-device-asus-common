@@ -32,6 +32,9 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_PACKAGES += \
     TinkerConfig
 
+#KioskMode
+PRODUCT_PACKAGES += \
+    KioskMode
 
 ifeq ($(strip $(BOARD_SUPPORT_MODEM)),true)
 $(call inherit-product, device/asus/common/cellular/cellular.mk)
