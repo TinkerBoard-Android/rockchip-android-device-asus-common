@@ -32,6 +32,9 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_PACKAGES += \
     TinkerConfig
 
+ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3_RV))
+  PRODUCT_PACKAGES :=
+endif
 
 ifeq ($(strip $(BOARD_SUPPORT_MODEM)),true)
 $(call inherit-product, device/asus/common/cellular/cellular.mk)
