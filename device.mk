@@ -32,8 +32,14 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_PACKAGES += \
     TinkerConfig
 
+#KioskMode
+PRODUCT_PACKAGES += \
+    KioskMode
+
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3_RV))
-  PRODUCT_PACKAGES := TinkerConfig
+PRODUCT_PACKAGES :=
+    TinkerConfig \
+    KioskMode
 endif
 
 ifeq ($(strip $(BOARD_SUPPORT_MODEM)),true)
