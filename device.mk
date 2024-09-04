@@ -37,7 +37,7 @@ PRODUCT_PACKAGES += \
     KioskMode
 
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3_RV))
-PRODUCT_PACKAGES :=
+PRODUCT_PACKAGES := \
     TinkerConfig \
     KioskMode
 endif
