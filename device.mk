@@ -36,7 +36,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     KioskMode
 
-ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),Tinker_Board_3_RV))
+ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),RVMON7_CTRL_PCB))
 PRODUCT_PACKAGES := \
     TinkerConfig \
     KioskMode
