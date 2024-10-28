@@ -37,7 +37,8 @@ PRODUCT_PACKAGES += \
     KioskMode
 
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),RVMON7_CTRL_PCB))
-PRODUCT_PACKAGES :=
+PRODUCT_PACKAGES := \
+    KioskModeRV
 endif
 
 ifeq ($(strip $(BOARD_SUPPORT_MODEM)),true)
