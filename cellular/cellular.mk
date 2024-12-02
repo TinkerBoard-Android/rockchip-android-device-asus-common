@@ -24,21 +24,21 @@ PRODUCT_PACKAGES += \
     dhcpcd \
     libhidlbase.vendor \
     libhwbinder.vendor \
-    android.hardware.radio@1.1.vendor \
-    android.hardware.radio@1.2.vendor \
-    android.hardware.radio@1.3.vendor \
-    android.hardware.radio@1.4.vendor \
-    android.hardware.radio@1.5.vendor \
-    android.hardware.radio@1.2-radio-service \
+    android.hardware.radio@1.0 \
+    android.hardware.radio@1.1 \
+    android.hardware.radio@1.2 \
+    android.hardware.radio@1.3 \
+    android.hardware.radio@1.4 \
+    android.hardware.radio@1.5 \
     android.hardware.radio.config@1.0-service \
-    android.hardware.radio.config@1.0.vendor \
-    android.hardware.radio.config@1.1.vendor \
-    android.hardware.radio.config@1.2.vendor \
-    android.hardware.radio.config@1.3.vendor \
-    android.hardware.radio.deprecated@1.0.vendor \
-    android.hardware.secure_element@1.0.vendor \
-    android.hardware.secure_element@1.1.vendor \
-    android.hardware.secure_element@1.2.vendor
+    android.hardware.radio.config@1.0 \
+    android.hardware.radio.config@1.1 \
+    android.hardware.radio.config@1.2 \
+    android.hardware.radio.config@1.3 \
+    android.hardware.radio.deprecated@1.0 \
+    android.hardware.secure_element@1.0 \
+    android.hardware.secure_element@1.1 \
+    android.hardware.secure_element@1.2
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.boot.noril=false \
@@ -49,12 +49,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.custom_ecc=1 \
     rild.libpath=/vendor/lib64/hw/libreference-ril.so \
     vendor.rild.libpath=/vendor/lib64/hw/libreference-ril.so \
+    vendor.rild.libargs=-d/dev/ttyUSB2 \
     persist.vendor.radio.procedure_bytes=SKIP \
     persist.radio.multisim.config=ssss \
     persist.vendor.radio.rat_on=combine
 
 PRODUCT_COPY_FILES += \
-    device/asus/common/cellular/rild.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/rild.rc \
     device/asus/common/cellular/libreference-ril.so:$(TARGET_COPY_OUT_VENDOR)/lib64/hw/libreference-ril.so \
     device/asus/common/cellular/libril.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libril.so \
     device/asus/common/cellular/ql-ril.conf:$(TARGET_COPY_OUT_VENDOR)/etc/ql-ril.conf \
