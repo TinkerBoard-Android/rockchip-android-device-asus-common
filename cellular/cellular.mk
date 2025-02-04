@@ -40,6 +40,17 @@ PRODUCT_PACKAGES += \
     android.hardware.secure_element@1.1 \
     android.hardware.secure_element@1.2
 
+
+PRODUCT_PACKAGES += \
+    android.hardware.radio.config-V1-ndk \
+    android.hardware.radio-V1-ndk \
+    android.hardware.radio.data-V1-ndk \
+    android.hardware.radio.messaging-V1-ndk \
+    android.hardware.radio.modem-V1-ndk \
+    android.hardware.radio.network-V1-ndk \
+    android.hardware.radio.sim-V1-ndk \
+    android.hardware.radio.voice-V1-ndk
+
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.boot.noril=false \
     ro.radio.noril=false \
