@@ -35,6 +35,8 @@ PRODUCT_PACKAGES += \
 #KioskMode
 PRODUCT_PACKAGES += \
     KioskMode
+PRODUCT_COPY_FILES += \
+    device/asus/common/prebuilts/KioskMode/privapp-permissions-com.asus.tinker_launcher.xml:system/etc/permissions/privapp-permissions-com.asus.tinker_launcher.xml
 
 ifeq ($(strip $(BOARD_SUPPORT_MODEM)),true)
 $(call inherit-product, device/asus/common/cellular/cellular.mk)
