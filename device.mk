@@ -35,6 +35,8 @@ PRODUCT_PACKAGES += \
 #KioskMode
 PRODUCT_PACKAGES += \
     KioskMode
+PRODUCT_COPY_FILES += \
+    device/asus/common/prebuilts/KioskMode/privapp-permissions-com.asus.tinker_launcher.xml:system/etc/permissions/privapp-permissions-com.asus.tinker_launcher.xml
 
 ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT),RVMON7_CTRL_PCB))
 PRODUCT_PACKAGES := \
